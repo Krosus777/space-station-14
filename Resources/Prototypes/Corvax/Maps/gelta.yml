@@ -2,7 +2,9 @@
   id: CorvaxGelta
   mapName: 'Gelta Station'
   mapPath: /Maps/corvax_gelta.yml
-  minPlayers: 40
+  maxRandomOffset: 0
+  randomRotation: false
+  minPlayers: 55
   stations:
     Gelta:
       stationProto: StandardNanotrasenStation
@@ -15,8 +17,6 @@
         - type: StationEmergencyShuttle
           emergencyShuttlePath: /Maps/Shuttles/emergency_courser.yml
         - type: StationJobs
-          overflowJobs:
-            - Passenger
           availableJobs:
             CargoTechnician: [ 4, 4 ]
             Passenger: [ -1, -1 ]

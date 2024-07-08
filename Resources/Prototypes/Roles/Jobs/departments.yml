@@ -80,6 +80,7 @@
   - HeadOfSecurity
   - SecurityCadet
   - SecurityOfficer
+  - Pilot # Corvax-Pilot
   - Detective
   - Warden
 
@@ -102,4 +103,5 @@
   - Reporter
   - Zookeeper
   - Psychologist
+  - Pilot # Corvax-Pilot
   primary: false
