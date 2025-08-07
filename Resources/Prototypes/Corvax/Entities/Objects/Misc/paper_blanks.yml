@@ -1,0 +1,34 @@
+- type: entity
+  parent: Paper
+  id: BasePaperBlank
+  abstract: true
+  description: A blank form awaiting details.
+  components:
+    - type: PaperForm
+
+- type: entity
+  parent: BasePaperBlank
+  id: PaperBlankReportStation
+  name: station situation report blank
+  description: A bureaucratic form for reporting the station's status.
+  components:
+    - type: PaperTemplate
+      template: doc-text-printer-report-station
+
+- type: entity
+  parent: BasePaperBlank
+  id: PaperBlankDepartmentReport
+  name: department report blank
+  description: A bureaucratic form for department performance reports.
+  components:
+    - type: PaperTemplate
+      template: doc-text-printer-report-department
+
+- type: entity
+  parent: BasePaperBlank
+  id: PaperBlankExperimentReport
+  name: experiment report blank
+  description: A bureaucratic form for recording experiment results.
+  components:
+    - type: PaperTemplate
+      template: doc-text-printer-experiment-report
