@@ -6,13 +6,7 @@
   components:
     - type: PaperForm
     - type: PaperFormPicker
-      forms:
-        - name: ent-PaperBlankReportStation
-          template: doc-text-printer-report-station
-        - name: ent-PaperBlankDepartmentReport
-          template: doc-text-printer-report-department
-        - name: ent-PaperBlankExperimentReport
-          template: doc-text-printer-experiment-report
+      basePrototype: PrintedDocument
     - type: UserInterface
       interfaces:
         enum.PaperUiKey.Key:

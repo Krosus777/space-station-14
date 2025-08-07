@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Robust.Shared.GameStates;
 using Robust.Shared.Serialization;
+using Robust.Shared.Prototypes;
 
 namespace Content.Shared.Paper;
 
@@ -16,6 +17,15 @@ public sealed partial class PaperFormPickerComponent : Component
     /// </summary>
     [DataField("forms")]
     public List<FormOption> Forms = new();
+
+    /// <summary>
+    /// Prototype ID whose descendants will be offered as forms.
+    /// If specified, all non-abstract entity prototypes inheriting from this prototype
+    /// and containing a <see cref="PaperComponent"/> with template text will be listed
+    /// as selectable options.
+    /// </summary>
+    [DataField("basePrototype")]
+    public ProtoId<EntityPrototype>? BasePrototype;
 
     /// <summary>
     /// Whether a form has already been chosen for this paper.

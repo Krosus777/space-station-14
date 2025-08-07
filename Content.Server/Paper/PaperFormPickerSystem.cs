@@ -18,6 +18,7 @@ public sealed class PaperFormPickerSystem : EntitySystem
     [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly PaperSystem _paperSystem = default!;
+    [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
 
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
 
@@ -35,6 +36,30 @@ public sealed class PaperFormPickerSystem : EntitySystem
 
         if (!_tagSystem.HasTag(args.Used, WriteTag))
             return;
+
+        if (entity.Comp.Forms.Count == 0 && entity.Comp.BasePrototype != null)
+        {
+            var baseId = entity.Comp.BasePrototype.Value.Id;
+            foreach (var proto in _prototypeManager.EnumeratePrototypes<EntityPrototype>())
+            {
+                if (proto.Abstract)
+                    continue;
+                if (proto.Parents == null || !proto.Parents.Contains(baseId))
+                    continue;
+                if (!proto.Components.TryGetValue("Paper", out var comp))
+                    continue;
+                if (comp.Component is not PaperComponent paper)
+                    continue;
+                if (string.IsNullOrEmpty(paper.Content))
+                    continue;
+
+                entity.Comp.Forms.Add(new PaperFormPickerComponent.FormOption
+                {
+                    Name = $"ent-{proto.ID}",
+                    Template = paper.Content
+                });
+            }
+        }
 
         var options = entity.Comp.Forms.Select(f => Loc.GetString(f.Name)).ToList();
         _uiSystem.SetUiState(entity.Owner, PaperFormPickerUiKey.Key, new PaperFormPickerBoundUserInterfaceState(options));
