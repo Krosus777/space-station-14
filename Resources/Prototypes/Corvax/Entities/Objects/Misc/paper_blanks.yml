@@ -13,3 +13,5 @@
           type: PaperBoundUserInterface
         enum.PaperFormPickerUiKey.Key:
           type: PaperFormPickerBoundUserInterface
+        enum.PaperFieldUiKey.Key:
+          type: PaperFieldPickerBoundUserInterface

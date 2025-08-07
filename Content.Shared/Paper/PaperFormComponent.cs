@@ -28,4 +28,12 @@ public sealed partial class PaperFormComponent : Component
     /// </summary>
     [DataField("dropdown"), AutoNetworkedField]
     public Dictionary<string, List<string>> Dropdown = new();
+
+    /// <summary>
+    ///     Tracks the currently selected value for each placeholder so that
+    ///     players can reopen and change their choice later by clicking the
+    ///     filled text.
+    /// </summary>
+    [DataField("selection"), AutoNetworkedField]
+    public Dictionary<string, string> Selection = new();
 }

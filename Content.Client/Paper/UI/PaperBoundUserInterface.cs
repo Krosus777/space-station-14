@@ -23,6 +23,7 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
+        _window.OnPlaceholderClicked += placeholder => SendMessage(new PaperComponent.PaperFieldRequestMessage(placeholder));
 
         if (EntMan.TryGetComponent<PaperComponent>(Owner, out var paper))
         {
