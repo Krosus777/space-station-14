@@ -1,5 +1,7 @@
 ent-PaperBlank = blank form
     .desc = A bureaucratic form awaiting selection.
+ent-FormBlank = blank form
+    .desc = A bureaucratic form awaiting selection.
 paper-form-picker-title = Select form
 paper-field-picker-title = Select value
 paper-field-picker-confirm = Confirm

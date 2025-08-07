@@ -1,5 +1,7 @@
 ent-PaperBlank = бланк
     .desc = Бюрократический документ, ожидающий выбора.
+ent-FormBlank = бланк
+    .desc = Бюрократический документ, ожидающий выбора.
 paper-form-picker-title = Выбор формы
 paper-field-picker-title = Выбор значения
 paper-field-picker-confirm = Применить
