@@ -1,34 +1,21 @@
 - type: entity
   parent: Paper
-  id: BasePaperBlank
-  abstract: true
-  description: A blank form awaiting details.
+  id: PaperBlank
+  name: blank form
+  description: A bureaucratic form awaiting selection.
   components:
     - type: PaperForm
-
-- type: entity
-  parent: BasePaperBlank
-  id: PaperBlankReportStation
-  name: station situation report blank
-  description: A bureaucratic form for reporting the station's status.
-  components:
-    - type: PaperTemplate
-      template: doc-text-printer-report-station
-
-- type: entity
-  parent: BasePaperBlank
-  id: PaperBlankDepartmentReport
-  name: department report blank
-  description: A bureaucratic form for department performance reports.
-  components:
-    - type: PaperTemplate
-      template: doc-text-printer-report-department
-
-- type: entity
-  parent: BasePaperBlank
-  id: PaperBlankExperimentReport
-  name: experiment report blank
-  description: A bureaucratic form for recording experiment results.
-  components:
-    - type: PaperTemplate
-      template: doc-text-printer-experiment-report
+    - type: PaperFormPicker
+      forms:
+        - name: ent-PaperBlankReportStation
+          template: doc-text-printer-report-station
+        - name: ent-PaperBlankDepartmentReport
+          template: doc-text-printer-report-department
+        - name: ent-PaperBlankExperimentReport
+          template: doc-text-printer-experiment-report
+    - type: UserInterface
+      interfaces:
+        enum.PaperUiKey.Key:
+          type: PaperBoundUserInterface
+        enum.PaperFormPickerUiKey.Key:
+          type: PaperFormPickerBoundUserInterface

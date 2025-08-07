@@ -1,6 +1,9 @@
-ent-PaperBlankReportStation = station situation report blank
+ent-PaperBlank = blank form
+    .desc = A bureaucratic form awaiting selection.
+paper-form-picker-title = Select form
+ent-PaperBlankReportStation = station situation report
     .desc = A bureaucratic form awaiting details.
-ent-PaperBlankDepartmentReport = department report blank
+ent-PaperBlankDepartmentReport = department report
     .desc = A bureaucratic form awaiting details.
-ent-PaperBlankExperimentReport = experiment report blank
+ent-PaperBlankExperimentReport = experiment report
     .desc = A bureaucratic form awaiting details.

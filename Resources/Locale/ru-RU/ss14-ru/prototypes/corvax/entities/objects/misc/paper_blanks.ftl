@@ -1,6 +1,9 @@
-ent-PaperBlankReportStation = бланк отчёта о ситуации на станции
+ent-PaperBlank = бланк
+    .desc = Бюрократический документ, ожидающий выбора.
+paper-form-picker-title = Выбор формы
+ent-PaperBlankReportStation = отчёт о ситуации на станции
     .desc = Бюрократический документ, ожидающий заполнения.
-ent-PaperBlankDepartmentReport = бланк отчёта отдела
+ent-PaperBlankDepartmentReport = отчёт отдела
     .desc = Бюрократический документ, ожидающий заполнения.
-ent-PaperBlankExperimentReport = бланк отчёта об эксперименте
+ent-PaperBlankExperimentReport = отчёт об эксперименте
     .desc = Бюрократический документ, ожидающий заполнения.
