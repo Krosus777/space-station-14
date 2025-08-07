@@ -362,26 +362,28 @@ namespace Content.Client.Paper.UI
 
             var index = Math.Clamp(Input.CursorPosition.Index, 0, text.Length);
 
-            var start = index;
-            while (start > 0 && !char.IsWhiteSpace(text[start - 1]))
-                start--;
-
-            var end = index;
-            while (end < text.Length && !char.IsWhiteSpace(text[end]))
-                end++;
-
-            if (start == end)
-                return null;
-
-            var word = text.Substring(start, end - start);
-
-            if (_dropdown.ContainsKey(word))
-                return word;
-
             foreach (var (placeholder, value) in _selection)
             {
-                if (value == word)
-                    return placeholder;
+                var search = 0;
+                while ((search = text.IndexOf(value, search, StringComparison.Ordinal)) != -1)
+                {
+                    var end = search + value.Length;
+                    if (index >= search && index <= end)
+                        return placeholder;
+                    search = end;
+                }
+            }
+
+            foreach (var placeholder in _dropdown.Keys)
+            {
+                var search = 0;
+                while ((search = text.IndexOf(placeholder, search, StringComparison.Ordinal)) != -1)
+                {
+                    var end = search + placeholder.Length;
+                    if (index >= search && index <= end)
+                        return placeholder;
+                    search = end;
+                }
             }
 
             return null;
