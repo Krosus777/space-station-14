@@ -2,7 +2,7 @@
               Title="{Loc 'paper-field-picker-title'}"
               SetSize="350 400"
               MinSize="350 200">
-    <PanelContainer StyleClasses="PaperDefaultBorder" VerticalExpand="True" HorizontalExpand="True">
+    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
         <BoxContainer Orientation="Vertical" Margin="6">
             <LineEdit Name="Search" HorizontalExpand="True" PlaceHolder="{Loc 'paper-field-picker-search'}" />
             <ScrollContainer VerticalExpand="True" Margin="0 4 0 4">

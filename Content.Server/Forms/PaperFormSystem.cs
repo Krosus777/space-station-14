@@ -4,8 +4,10 @@ using System.Linq;
 using Content.Shared.Forms;
 using Content.Shared.Paper;
 using Content.Shared.Roles;
+using Content.Shared.Roles.Jobs;
 using Content.Shared.Station;
 using Content.Shared.UserInterface;
+using Content.Shared.Mind.Components;
 using Robust.Server.GameObjects;
 using Robust.Server.Player;
 using Robust.Shared.Prototypes;
@@ -23,6 +25,7 @@ public sealed class PaperFormSystem : EntitySystem
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly PaperSystem _paperSystem = default!;
+    [Dependency] private readonly SharedJobSystem _jobSystem = default!;
 
     public override void Initialize()
     {
@@ -64,11 +67,17 @@ public sealed class PaperFormSystem : EntitySystem
 
         if (text.Contains("[FIO]"))
         {
-            var names = new List<string>();
+            var selfName = MetaData(args.User).EntityName;
+            var names = new List<string> { selfName };
             foreach (var session in _playerManager.Sessions)
             {
                 if (session.AttachedEntity is { Valid: true } attached)
-                    names.Add(MetaData(attached).EntityName);
+                {
+                    var name = MetaData(attached).EntityName;
+                    if (name == selfName)
+                        continue;
+                    names.Add(name);
+                }
             }
             entity.Comp.Dropdown["[FIO]"] = names;
             entity.Comp.Pending.Add("[FIO]");
@@ -76,8 +85,18 @@ public sealed class PaperFormSystem : EntitySystem
 
         if (text.Contains("[JOB]"))
         {
-            var jobs = _prototypeManager.EnumeratePrototypes<JobPrototype>()
-                .Select(p => p.LocalizedName).ToList();
+            TryComp(args.User, out MindContainerComponent? mind);
+            _jobSystem.MindTryGetJobName(mind?.Mind, out var jobName);
+            var jobs = new List<string>();
+            if (!string.IsNullOrEmpty(jobName))
+                jobs.Add(jobName);
+            foreach (var proto in _prototypeManager.EnumeratePrototypes<JobPrototype>())
+            {
+                var name = proto.LocalizedName;
+                if (name == jobName)
+                    continue;
+                jobs.Add(name);
+            }
             entity.Comp.Dropdown["[JOB]"] = jobs;
             entity.Comp.Pending.Add("[JOB]");
         }
