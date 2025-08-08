@@ -134,38 +134,30 @@ public sealed class PaperFormSystem : EntitySystem
     {
         var names = new List<string>();
         var selfName = MetaData(actor).EntityName;
-        var station = _stationSystem.GetCurrentStation(actor);
+        var station = _stationSystem.GetOwningStation(actor);
 
         if (station != null)
         {
             var (_, manifest) = _crewManifest.GetCrewManifest(station.Value);
             if (manifest != null)
-            {
-                foreach (var entry in manifest.Entries)
-                    names.Add(entry.Name);
-            }
+                names.AddRange(manifest.Entries.Select(e => e.Name));
 
-            if (names.Count == 0)
-            {
-                foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
-                    names.Add(record.Name);
-            }
+            foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
+                names.Add(record.Name);
 
-            if (names.Count == 0)
+            var minds = EntityQueryEnumerator<MindContainerComponent>();
+            while (minds.MoveNext(out var uid, out _))
             {
-                var minds = EntityQueryEnumerator<MindContainerComponent>();
-                while (minds.MoveNext(out var uid, out _))
-                {
-                    if (_stationSystem.GetOwningStation(uid) != station)
-                        continue;
+                if (_stationSystem.GetOwningStation(uid) != station)
+                    continue;
 
-                    names.Add(MetaData(uid).EntityName);
-                }
+                names.Add(MetaData(uid).EntityName);
             }
         }
 
         names = names.Distinct().ToList();
         names.Remove(selfName);
+        names.Sort(StringComparer.CurrentCultureIgnoreCase);
         names.Insert(0, selfName);
         return names;
     }
