@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Content.Server.CrewManifest;
 using Content.Server.GameTicking;
+using Content.Server.Station.Systems;
+using Content.Server.StationRecords.Systems;
 using Content.Shared.CrewManifest;
 using Content.Shared.Forms;
+using Content.Shared.Mind.Components;
 using Content.Shared.Paper;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Station;
+using Content.Shared.StationRecords;
 using Content.Shared.UserInterface;
-using Content.Shared.Mind.Components;
-using Content.Server.Station.Systems;
 using Robust.Server.GameObjects;
 using Robust.Shared.GameObjects;
-using Robust.Shared.Prototypes;
 using Robust.Shared.Localization;
+using Robust.Shared.Prototypes;
 
 namespace Content.Server.Forms;
 
@@ -30,6 +32,7 @@ public sealed class PaperFormSystem : EntitySystem
     [Dependency] private readonly PaperSystem _paperSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
     [Dependency] private readonly CrewManifestSystem _crewManifest = default!;
+    [Dependency] private readonly StationRecordsSystem _recordsSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
 
     public override void Initialize()
@@ -85,7 +88,12 @@ public sealed class PaperFormSystem : EntitySystem
                         names.Add(entry.Name);
                 }
 
-                // Fallback to enumerating station minds if the manifest has not been built yet.
+                if (names.Count == 0)
+                {
+                    foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
+                        names.Add(record.Name);
+                }
+
                 if (names.Count == 0)
                 {
                     var minds = EntityQueryEnumerator<MindContainerComponent>();
