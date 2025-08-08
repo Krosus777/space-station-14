@@ -49,15 +49,11 @@ public sealed class PaperFormSystem : EntitySystem
 
         var text = entity.Comp.Template!;
 
-        // station identifier (e.g. EV-123)
+        // station identifier
         var stationId = string.Empty;
-        var station = _stationSystem.GetCurrentStation(args.User);
+        var station = _stationSystem.GetOwningStation(args.User);
         if (station != null)
-        {
-            var full = MetaData(station.Value).EntityName;
-            var lastSpace = full.LastIndexOf(' ');
-            stationId = lastSpace >= 0 ? full[(lastSpace + 1)..] : full;
-        }
+            stationId = MetaData(station.Value).EntityName;
         text = text.Replace("[STATION]", stationId);
 
         // future date with round time
@@ -70,6 +66,10 @@ public sealed class PaperFormSystem : EntitySystem
         entity.Comp.Pending.Clear();
         entity.Comp.Dropdown.Clear();
         entity.Comp.Selection.Clear();
+
+        // build dropdown options for later use
+        entity.Comp.Dropdown["[FIO]"] = BuildCrewList(args.User);
+        entity.Comp.Dropdown["[JOB]"] = BuildJobList(args.User);
 
         if (text.Contains("[FIO]"))
             entity.Comp.Pending.Add("[FIO]");

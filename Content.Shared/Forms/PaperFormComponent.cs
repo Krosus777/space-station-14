@@ -1,12 +1,13 @@
 using System;
 using System.Collections.Generic;
+using Robust.Shared.GameStates;
 
 namespace Content.Shared.Forms;
 
 /// <summary>
 /// Stores temporary form data before it is committed to a paper.
 /// </summary>
-[RegisterComponent]
+[RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
 public sealed partial class PaperFormComponent : Component
 {
     /// <summary>
@@ -24,7 +25,7 @@ public sealed partial class PaperFormComponent : Component
     /// <summary>
     /// Dropdown options for each placeholder.
     /// </summary>
-    [DataField]
+    [DataField, AutoNetworkedField]
     public Dictionary<string, List<string>> Dropdown = new();
 
     /// <summary>

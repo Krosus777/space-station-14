@@ -192,6 +192,7 @@ ui-options-function-open-tile-spawn-window = Открыть меню спавн�
 ui-options-function-open-decal-spawn-window = Открыть меню спавна декалей
 ui-options-function-open-admin-menu = Открыть админ меню
 ui-options-function-open-guidebook = Открыть руководство
+ui-options-function-open-paper-radial-menu = Меню полей формы
 ui-options-function-window-close-all = Закрыть все окна
 ui-options-function-window-close-recent = Закрыть текущее окно
 ui-options-function-show-escape-menu = Переключить игровое меню
