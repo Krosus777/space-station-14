@@ -45,7 +45,7 @@ public sealed class PaperFormSystem : EntitySystem
     {
         if (entity.Comp.Filled)
             return;
-        if (!TryComp(entity.Owner, out PaperComponent? paper))
+        if (!HasComp<PaperComponent>(entity.Owner))
             return;
         if (string.IsNullOrEmpty(entity.Comp.Template))
             return;
@@ -75,62 +75,10 @@ public sealed class PaperFormSystem : EntitySystem
         entity.Comp.Selection.Clear();
 
         if (text.Contains("[FIO]"))
-        {
-            var selfName = MetaData(args.User).EntityName;
-            var names = new List<string>();
-
-            if (station != null)
-            {
-                var (_, manifest) = _crewManifest.GetCrewManifest(station.Value);
-                if (manifest != null)
-                {
-                    foreach (var entry in manifest.Entries)
-                        names.Add(entry.Name);
-                }
-
-                if (names.Count == 0)
-                {
-                    foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
-                        names.Add(record.Name);
-                }
-
-                if (names.Count == 0)
-                {
-                    var minds = EntityQueryEnumerator<MindContainerComponent>();
-                    while (minds.MoveNext(out var uid, out var _))
-                    {
-                        if (_stationSystem.GetOwningStation(uid) != station)
-                            continue;
-
-                        names.Add(MetaData(uid).EntityName);
-                    }
-                }
-            }
-
-            names = names.Distinct().ToList();
-            names.Remove(selfName);
-            names.Insert(0, selfName);
-            entity.Comp.Dropdown["[FIO]"] = names;
             entity.Comp.Pending.Add("[FIO]");
-        }
 
         if (text.Contains("[JOB]"))
-        {
-            TryComp(args.User, out MindContainerComponent? mind);
-            _jobSystem.MindTryGetJobName(mind?.Mind, out var jobName);
-            var jobs = new List<string>();
-            if (!string.IsNullOrEmpty(jobName))
-                jobs.Add(jobName);
-            foreach (var proto in _prototypeManager.EnumeratePrototypes<JobPrototype>())
-            {
-                var name = proto.LocalizedName;
-                if (name == jobName)
-                    continue;
-                jobs.Add(name);
-            }
-            entity.Comp.Dropdown["[JOB]"] = jobs;
             entity.Comp.Pending.Add("[JOB]");
-        }
 
         if (entity.Comp.Pending.Count == 0)
         {
@@ -141,7 +89,7 @@ public sealed class PaperFormSystem : EntitySystem
         }
 
         var placeholder = entity.Comp.Pending[0];
-        var options = entity.Comp.Dropdown[placeholder];
+        var options = GetOptions(entity, placeholder, args.User);
         _ui.SetUiState(entity.Owner, FormFieldUiKey.Key, new FormFieldUiState(placeholder, options));
         _ui.OpenUi(entity.Owner, FormFieldUiKey.Key, args.User);
     }
@@ -158,7 +106,7 @@ public sealed class PaperFormSystem : EntitySystem
         if (entity.Comp.Pending.Count > 0)
         {
             var next = entity.Comp.Pending[0];
-            var options = entity.Comp.Dropdown[next];
+            var options = GetOptions(entity, next, msg.Actor);
             _ui.SetUiState(entity.Owner, FormFieldUiKey.Key, new FormFieldUiState(next, options));
             return;
         }
@@ -167,5 +115,75 @@ public sealed class PaperFormSystem : EntitySystem
         _ui.CloseUi(entity.Owner, FormFieldUiKey.Key, msg.Actor);
         _paperSystem.SetContent(entity.Owner, entity.Comp.CurrentText);
         _ui.OpenUi(entity.Owner, PaperComponent.PaperUiKey.Key, msg.Actor);
+    }
+
+    private List<string> GetOptions(Entity<PaperFormComponent> entity, string placeholder, EntityUid actor)
+    {
+        if (entity.Comp.Dropdown.TryGetValue(placeholder, out var options))
+            return options;
+
+        return placeholder switch
+        {
+            "[FIO]" => BuildCrewList(actor),
+            "[JOB]" => BuildJobList(actor),
+            _ => new List<string>()
+        };
+    }
+
+    private List<string> BuildCrewList(EntityUid actor)
+    {
+        var names = new List<string>();
+        var selfName = MetaData(actor).EntityName;
+        var station = _stationSystem.GetCurrentStation(actor);
+
+        if (station != null)
+        {
+            var (_, manifest) = _crewManifest.GetCrewManifest(station.Value);
+            if (manifest != null)
+            {
+                foreach (var entry in manifest.Entries)
+                    names.Add(entry.Name);
+            }
+
+            if (names.Count == 0)
+            {
+                foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
+                    names.Add(record.Name);
+            }
+
+            if (names.Count == 0)
+            {
+                var minds = EntityQueryEnumerator<MindContainerComponent>();
+                while (minds.MoveNext(out var uid, out _))
+                {
+                    if (_stationSystem.GetOwningStation(uid) != station)
+                        continue;
+
+                    names.Add(MetaData(uid).EntityName);
+                }
+            }
+        }
+
+        names = names.Distinct().ToList();
+        names.Remove(selfName);
+        names.Insert(0, selfName);
+        return names;
+    }
+
+    private List<string> BuildJobList(EntityUid actor)
+    {
+        TryComp(actor, out MindContainerComponent? mind);
+        _jobSystem.MindTryGetJobName(mind?.Mind, out var jobName);
+        var jobs = new List<string>();
+        if (!string.IsNullOrEmpty(jobName))
+            jobs.Add(jobName);
+        foreach (var proto in _prototypeManager.EnumeratePrototypes<JobPrototype>())
+        {
+            var name = proto.LocalizedName;
+            if (name == jobName)
+                continue;
+            jobs.Add(name);
+        }
+        return jobs;
     }
 }
