@@ -1,3 +1,4 @@
+using System;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
@@ -10,6 +11,8 @@ namespace Content.Client.Paper.UI;
 [UsedImplicitly]
 public sealed class PaperBoundUserInterface : BoundUserInterface
 {
+    public static event Action<EntityUid, PaperWindow>? WindowOpened;
+    public static event Action<PaperWindow>? WindowClosed;
     [ViewVariables]
     private PaperWindow? _window;
 
@@ -23,6 +26,8 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
 
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
+
+        WindowOpened?.Invoke(Owner, _window);
 
         if (EntMan.TryGetComponent<PaperComponent>(Owner, out var paper))
         {
@@ -49,5 +54,16 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
             _window.Input.TextRope = Rope.Leaf.Empty;
             _window.Input.CursorPosition = new TextEdit.CursorPos(0, TextEdit.LineBreakBias.Top);
         }
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && _window != null)
+        {
+            WindowClosed?.Invoke(_window);
+            _window.Dispose();
+            _window = null;
+        }
+        base.Dispose(disposing);
     }
 }
