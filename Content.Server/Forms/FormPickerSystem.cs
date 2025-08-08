@@ -17,6 +17,7 @@ public sealed class FormPickerSystem : EntitySystem
     [Dependency] private readonly TagSystem _tagSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _uiSystem = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
+    [Dependency] private readonly PaperSystem _paperSystem = default!;
 
     private static readonly ProtoId<TagPrototype> WriteTag = "Write";
 
@@ -79,6 +80,9 @@ public sealed class FormPickerSystem : EntitySystem
         var form = EnsureComp<PaperFormComponent>(entity.Owner);
         form.Template = Loc.GetString(choice.Template);
         form.Filled = false;
+
+        // Clear any existing paper content so the new template fully replaces it.
+        _paperSystem.SetContent(entity.Owner, string.Empty);
 
         entity.Comp.Selected = true;
         Dirty(entity.Owner, entity.Comp);

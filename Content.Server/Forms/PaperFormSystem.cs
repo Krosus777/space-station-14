@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Content.Server.CrewManifest;
+using Content.Server.GameTicking;
+using Content.Shared.CrewManifest;
 using Content.Shared.Forms;
 using Content.Shared.Paper;
 using Content.Shared.Roles;
@@ -9,7 +12,6 @@ using Content.Shared.Station;
 using Content.Shared.UserInterface;
 using Content.Shared.Mind.Components;
 using Robust.Server.GameObjects;
-using Robust.Server.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Localization;
 
@@ -23,9 +25,10 @@ public sealed class PaperFormSystem : EntitySystem
     [Dependency] private readonly SharedStationSystem _stationSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
-    [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly PaperSystem _paperSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
+    [Dependency] private readonly CrewManifestSystem _crewManifest = default!;
+    [Dependency] private readonly GameTicker _gameTicker = default!;
 
     public override void Initialize()
     {
@@ -55,9 +58,10 @@ public sealed class PaperFormSystem : EntitySystem
         }
         text = text.Replace("[STATION]", stationId);
 
-        // future date
+        // future date with round time
         var future = DateTime.UtcNow.AddYears(1000);
-        var date = future.ToString("yyyy-MM-dd");
+        var round = _gameTicker.RoundDuration();
+        var date = future.ToString("yyyy-MM-dd") + " " + round.ToString("hh\\:mm");
         text = text.Replace("[DATE]", date);
 
         entity.Comp.CurrentText = text;
@@ -68,17 +72,18 @@ public sealed class PaperFormSystem : EntitySystem
         if (text.Contains("[FIO]"))
         {
             var selfName = MetaData(args.User).EntityName;
-            var names = new List<string> { selfName };
-            foreach (var session in _playerManager.Sessions)
+            var names = new List<string>();
+            if (station != null)
             {
-                if (session.AttachedEntity is { Valid: true } attached)
+                var (_, entries) = _crewManifest.GetCrewManifest(station.Value);
+                if (entries != null)
                 {
-                    var name = MetaData(attached).EntityName;
-                    if (name == selfName)
-                        continue;
-                    names.Add(name);
+                    foreach (var entry in entries.Entries)
+                        names.Add(entry.Name);
                 }
             }
+            names.Remove(selfName);
+            names.Insert(0, selfName);
             entity.Comp.Dropdown["[FIO]"] = names;
             entity.Comp.Pending.Add("[FIO]");
         }
