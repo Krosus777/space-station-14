@@ -21,8 +21,7 @@ public sealed partial class FormFieldPickerWindow : DefaultWindow
         Confirm.OnPressed += _ =>
         {
             var selected = Options.GetSelected().FirstOrDefault();
-            var choice = selected?.Text ?? string.Empty;
-            var text = string.IsNullOrWhiteSpace(Custom.Text) ? choice : Custom.Text;
+            var text = selected?.Text ?? Search.Text;
             OnConfirmed?.Invoke(text);
         };
         Search.OnTextChanged += _ => Refresh();
