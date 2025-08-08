@@ -11,7 +11,9 @@ using Content.Shared.Roles.Jobs;
 using Content.Shared.Station;
 using Content.Shared.UserInterface;
 using Content.Shared.Mind.Components;
+using Content.Server.Station.Systems;
 using Robust.Server.GameObjects;
+using Robust.Shared.GameObjects;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Localization;
 
@@ -22,7 +24,7 @@ namespace Content.Server.Forms;
 /// </summary>
 public sealed class PaperFormSystem : EntitySystem
 {
-    [Dependency] private readonly SharedStationSystem _stationSystem = default!;
+    [Dependency] private readonly StationSystem _stationSystem = default!;
     [Dependency] private readonly UserInterfaceSystem _ui = default!;
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
     [Dependency] private readonly PaperSystem _paperSystem = default!;
@@ -73,15 +75,31 @@ public sealed class PaperFormSystem : EntitySystem
         {
             var selfName = MetaData(args.User).EntityName;
             var names = new List<string>();
+
             if (station != null)
             {
-                var (_, entries) = _crewManifest.GetCrewManifest(station.Value);
-                if (entries != null)
+                var (_, manifest) = _crewManifest.GetCrewManifest(station.Value);
+                if (manifest != null)
                 {
-                    foreach (var entry in entries.Entries)
+                    foreach (var entry in manifest.Entries)
                         names.Add(entry.Name);
                 }
+
+                // Fallback to enumerating station minds if the manifest has not been built yet.
+                if (names.Count == 0)
+                {
+                    var minds = EntityQueryEnumerator<MindContainerComponent>();
+                    while (minds.MoveNext(out var uid, out var _))
+                    {
+                        if (_stationSystem.GetOwningStation(uid) != station)
+                            continue;
+
+                        names.Add(MetaData(uid).EntityName);
+                    }
+                }
             }
+
+            names = names.Distinct().ToList();
             names.Remove(selfName);
             names.Insert(0, selfName);
             entity.Comp.Dropdown["[FIO]"] = names;

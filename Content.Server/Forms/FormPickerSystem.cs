@@ -78,8 +78,14 @@ public sealed class FormPickerSystem : EntitySystem
 
         var choice = entity.Comp.Forms[args.Index];
         var form = EnsureComp<PaperFormComponent>(entity.Owner);
+
+        // Reset the previous form state so selecting a new template fully replaces the document.
         form.Template = Loc.GetString(choice.Template);
         form.Filled = false;
+        form.CurrentText = string.Empty;
+        form.Pending.Clear();
+        form.Dropdown.Clear();
+        form.Selection.Clear();
 
         // Clear any existing paper content so the new template fully replaces it.
         _paperSystem.SetContent(entity.Owner, string.Empty);
