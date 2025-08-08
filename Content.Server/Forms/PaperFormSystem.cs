@@ -4,7 +4,6 @@ using System.Linq;
 using Content.Server.CrewManifest;
 using Content.Server.GameTicking;
 using Content.Server.Station.Systems;
-using Content.Server.StationRecords.Systems;
 using Content.Shared.CrewManifest;
 using Content.Shared.Forms;
 using Content.Shared.Mind.Components;
@@ -12,7 +11,6 @@ using Content.Shared.Paper;
 using Content.Shared.Roles;
 using Content.Shared.Roles.Jobs;
 using Content.Shared.Station;
-using Content.Shared.StationRecords;
 using Content.Shared.UserInterface;
 using Robust.Server.GameObjects;
 using Robust.Shared.GameObjects;
@@ -32,7 +30,6 @@ public sealed class PaperFormSystem : EntitySystem
     [Dependency] private readonly PaperSystem _paperSystem = default!;
     [Dependency] private readonly SharedJobSystem _jobSystem = default!;
     [Dependency] private readonly CrewManifestSystem _crewManifest = default!;
-    [Dependency] private readonly StationRecordsSystem _recordsSystem = default!;
     [Dependency] private readonly GameTicker _gameTicker = default!;
 
     public override void Initialize()
@@ -141,18 +138,6 @@ public sealed class PaperFormSystem : EntitySystem
             var (_, manifest) = _crewManifest.GetCrewManifest(station.Value);
             if (manifest != null)
                 names.AddRange(manifest.Entries.Select(e => e.Name));
-
-            foreach (var (_, record) in _recordsSystem.GetRecordsOfType<GeneralStationRecord>(station.Value))
-                names.Add(record.Name);
-
-            var minds = EntityQueryEnumerator<MindContainerComponent>();
-            while (minds.MoveNext(out var uid, out _))
-            {
-                if (_stationSystem.GetOwningStation(uid) != station)
-                    continue;
-
-                names.Add(MetaData(uid).EntityName);
-            }
         }
 
         names = names.Distinct().ToList();
