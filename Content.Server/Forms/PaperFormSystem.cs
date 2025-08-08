@@ -41,12 +41,16 @@ public sealed class PaperFormSystem : EntitySystem
 
         var text = entity.Comp.Template!;
 
-        // station name
-        var stationName = string.Empty;
+        // station identifier (e.g. EV-123)
+        var stationId = string.Empty;
         var station = _stationSystem.GetCurrentStation(args.User);
         if (station != null)
-            stationName = MetaData(station.Value).EntityName;
-        text = text.Replace("[STATION]", stationName);
+        {
+            var full = MetaData(station.Value).EntityName;
+            var lastSpace = full.LastIndexOf(' ');
+            stationId = lastSpace >= 0 ? full[(lastSpace + 1)..] : full;
+        }
+        text = text.Replace("[STATION]", stationId);
 
         // future date
         var future = DateTime.UtcNow.AddYears(1000);
