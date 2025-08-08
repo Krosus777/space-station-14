@@ -2,7 +2,10 @@ using System;
 using JetBrains.Annotations;
 using Robust.Client.UserInterface;
 using Robust.Client.UserInterface.Controls;
+using Robust.Client.UserInterface.Controllers;
 using Robust.Shared.Utility;
+using Robust.Shared.IoC;
+using Content.Client.Forms.UI;
 using Content.Shared.Paper;
 using static Content.Shared.Paper.PaperComponent;
 
@@ -23,6 +26,8 @@ public sealed class PaperBoundUserInterface : BoundUserInterface
     protected override void Open()
     {
         base.Open();
+
+        IoCManager.Resolve<IUserInterfaceManager>().GetUIController<FormRadialMenuUIController>();
 
         _window = this.CreateWindow<PaperWindow>();
         _window.OnSaved += InputOnTextEntered;
