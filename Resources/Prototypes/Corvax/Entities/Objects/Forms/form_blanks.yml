@@ -14,19 +14,19 @@
         - state: paper_stamp-generic
           map: ["enum.PaperVisualLayers.Stamp"]
           visible: false
-    - type: FormDocument
+    - type: Paper
     - type: FormPicker
       basePrototype: PrintedDocument
     - type: UserInterface
       interfaces:
-        enum.FormUiKey.Key:
-          type: FormBoundUserInterface
+        enum.PaperUiKey.Key:
+          type: PaperBoundUserInterface
         enum.FormPickerUiKey.Key:
           type: FormPickerBoundUserInterface
         enum.FormFieldUiKey.Key:
           type: FormFieldPickerBoundUserInterface
     - type: ActivatableUI
-      key: enum.FormUiKey.Key
+      key: enum.PaperUiKey.Key
       requiresComplex: false
     - type: Item
       size: Tiny
