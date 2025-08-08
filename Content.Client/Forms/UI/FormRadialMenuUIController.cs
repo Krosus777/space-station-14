@@ -87,6 +87,7 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
         _menu = new SimpleRadialMenu();
         _menu.SetButtons(options);
         _menu.OnClose += CloseMenu;
+        _menu.Open();
         _menu.OpenOverMouseScreenPosition();
     }
 
