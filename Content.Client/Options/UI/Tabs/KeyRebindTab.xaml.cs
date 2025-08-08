@@ -202,6 +202,7 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.FlipObject);
 
             AddHeader("ui-options-header-ui");
+            AddButton(ContentKeyFunctions.OpenPaperRadialMenu);
             AddButton(ContentKeyFunctions.FocusChat);
             AddButton(ContentKeyFunctions.FocusLocalChat);
             AddButton(ContentKeyFunctions.FocusEmote);
@@ -221,7 +222,6 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.OpenAHelp);
             AddButton(ContentKeyFunctions.OpenActionsMenu);
             AddButton(ContentKeyFunctions.OpenEmotesMenu);
-            AddButton(ContentKeyFunctions.OpenPaperRadialMenu);
             AddButton(ContentKeyFunctions.ToggleRoundEndSummaryWindow);
             AddButton(ContentKeyFunctions.OpenEntitySpawnWindow);
             AddButton(ContentKeyFunctions.OpenSandboxWindow);

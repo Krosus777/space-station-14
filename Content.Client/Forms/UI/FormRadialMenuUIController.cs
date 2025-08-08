@@ -5,6 +5,7 @@ using Content.Client.UserInterface.Controls;
 using Content.Shared.Forms;
 using Content.Shared.Input;
 using Content.Shared.Roles;
+using JetBrains.Annotations;
 using Robust.Client.Player;
 using Robust.Client.UserInterface.Controllers;
 using Robust.Client.UserInterface.Controls;
@@ -18,6 +19,7 @@ namespace Content.Client.Forms.UI;
 /// <summary>
 /// Opens a small radial menu for inserting form fields into the paper editor.
 /// </summary>
+[UsedImplicitly]
 public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<GameplayState>
 {
     [Dependency] private readonly IPrototypeManager _prototypeManager = default!;
