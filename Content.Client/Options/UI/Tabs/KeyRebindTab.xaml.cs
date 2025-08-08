@@ -221,6 +221,7 @@ namespace Content.Client.Options.UI.Tabs
             AddButton(ContentKeyFunctions.OpenAHelp);
             AddButton(ContentKeyFunctions.OpenActionsMenu);
             AddButton(ContentKeyFunctions.OpenEmotesMenu);
+            AddButton(ContentKeyFunctions.OpenPaperRadialMenu);
             AddButton(ContentKeyFunctions.ToggleRoundEndSummaryWindow);
             AddButton(ContentKeyFunctions.OpenEntitySpawnWindow);
             AddButton(ContentKeyFunctions.OpenSandboxWindow);

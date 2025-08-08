@@ -243,7 +243,7 @@ binds:
   key: NumpadNum0
 - function: OpenPaperRadialMenu
   type: State
-  key: R
+  key: F12
 - function: OpenAHelp
   type: State
   key: F1
