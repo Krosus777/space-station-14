@@ -2,6 +2,7 @@ using System.Linq;
 using Content.Shared.Forms;
 using Content.Shared.Interaction;
 using Content.Shared.Tag;
+using Content.Shared.Paper;
 using Robust.Server.GameObjects;
 using Robust.Shared.Player;
 using Robust.Shared.Localization;
@@ -44,17 +45,17 @@ public sealed class FormPickerSystem : EntitySystem
                     continue;
                 if (proto.Parents == null || !proto.Parents.Contains(baseId))
                     continue;
-                if (!proto.Components.TryGetValue("FormDocument", out var comp))
+                if (!proto.Components.TryGetValue("Paper", out var comp))
                     continue;
-                if (comp.Component is not FormDocumentComponent formDoc)
+                if (comp.Component is not PaperComponent paper)
                     continue;
-                if (string.IsNullOrEmpty(formDoc.Content))
+                if (string.IsNullOrEmpty(paper.Content))
                     continue;
 
                 entity.Comp.Forms.Add(new FormPickerComponent.FormOption
                 {
                     Name = $"ent-{proto.ID}",
-                    Template = formDoc.Content
+                    Template = paper.Content
                 });
             }
         }

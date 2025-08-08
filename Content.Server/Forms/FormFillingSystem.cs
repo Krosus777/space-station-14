@@ -74,23 +74,8 @@ public sealed class FormFillingSystem : EntitySystem
         _formSystem.SetContent((entity.Owner, entity.Comp), text);
         Dirty(entity.Owner, entity.Comp);
 
-        if (entity.Comp.Pending.Count > 0)
-        {
-            OpenNextField(entity, args.User);
-            return;
-        }
-
-        entity.Comp.Filled = true;
         entity.Comp.Mode = FormDocumentComponent.FormAction.Write;
         _uiSystem.OpenUi(entity.Owner, FormDocumentComponent.FormUiKey.Key, args.User);
-    }
-
-    private void OpenNextField(Entity<FormDocumentComponent> entity, EntityUid user)
-    {
-        var placeholder = entity.Comp.Pending[0];
-        var options = entity.Comp.Dropdown[placeholder];
-        _uiSystem.OpenUi(entity.Owner, FormFieldUiKey.Key, user);
-        _uiSystem.SetUiState(entity.Owner, FormFieldUiKey.Key, new FormFieldUiState(placeholder, options));
     }
 
     private void OnFieldRequest(Entity<FormDocumentComponent> entity, ref FormDocumentComponent.FormFieldRequestMessage args)
