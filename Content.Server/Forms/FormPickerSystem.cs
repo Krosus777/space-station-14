@@ -79,6 +79,10 @@ public sealed class FormPickerSystem : EntitySystem
         var choice = entity.Comp.Forms[args.Index];
         var form = EnsureComp<PaperFormComponent>(entity.Owner);
 
+        // Close any existing paper or field UIs so the new template can be applied cleanly.
+        _uiSystem.CloseUi(entity.Owner, PaperComponent.PaperUiKey.Key, user);
+        _uiSystem.CloseUi(entity.Owner, FormFieldUiKey.Key, user);
+
         // Reset the previous form state so selecting a new template fully replaces the document.
         form.Template = Loc.GetString(choice.Template);
         form.Filled = false;
