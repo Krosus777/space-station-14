@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Linq;
 using Content.Shared.Administration.Logs;
 using Content.Shared.UserInterface;
@@ -145,9 +144,6 @@ public sealed class PaperSystem : EntitySystem
 
                 var writeEvent = new PaperWriteEvent(args.User, entity);
                 RaiseLocalEvent(args.Used, ref writeEvent);
-
-                var fillEv = new PaperFillRequestEvent(args.User);
-                RaiseLocalEvent(entity.Owner, ref fillEv);
 
                 entity.Comp.Mode = PaperAction.Write;
                 _uiSystem.OpenUi(entity.Owner, PaperUiKey.Key, args.User);
@@ -310,17 +306,7 @@ public sealed class PaperSystem : EntitySystem
 
     private void UpdateUserInterface(Entity<PaperComponent> entity)
     {
-        Dictionary<string, List<string>>? dropdown = null;
-        Dictionary<string, string>? selection = null;
-
-        if (TryComp<PaperFormComponent>(entity, out var form))
-        {
-            dropdown = form.Dropdown;
-            selection = form.Selection;
-        }
-
-        _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key,
-            new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode, dropdown, selection));
+        _uiSystem.SetUiState(entity.Owner, PaperUiKey.Key, new PaperBoundUserInterfaceState(entity.Comp.Content, entity.Comp.StampedBy, entity.Comp.Mode));
     }
 }
 

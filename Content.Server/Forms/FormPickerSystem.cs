@@ -89,13 +89,6 @@ public sealed class FormPickerSystem : EntitySystem
         var fillEv = new FormFillRequestEvent(user);
         RaiseLocalEvent(entity.Owner, ref fillEv);
 
-        if (TryComp(entity.Owner, out FormDocumentComponent? form))
-        {
-            form.Mode = FormDocumentComponent.FormAction.Write;
-            _formSystem.SetContent((entity.Owner, form), form.Content);
-            _uiSystem.OpenUi(entity.Owner, FormDocumentComponent.FormUiKey.Key, user);
-        }
-
         _uiSystem.CloseUi(entity.Owner, FormPickerUiKey.Key, user);
     }
 }

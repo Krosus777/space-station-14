@@ -38,19 +38,12 @@ public sealed partial class PaperComponent : Component
         public readonly string Text;
         public readonly List<StampDisplayInfo> StampedBy;
         public readonly PaperAction Mode;
-        public readonly Dictionary<string, List<string>> Dropdown;
-        public readonly Dictionary<string, string> Selection;
 
-        public PaperBoundUserInterfaceState(string text, List<StampDisplayInfo> stampedBy,
-            PaperAction mode = PaperAction.Read,
-            Dictionary<string, List<string>>? dropdown = null,
-            Dictionary<string, string>? selection = null)
+        public PaperBoundUserInterfaceState(string text, List<StampDisplayInfo> stampedBy, PaperAction mode = PaperAction.Read)
         {
             Text = text;
             StampedBy = stampedBy;
             Mode = mode;
-            Dropdown = dropdown ?? new();
-            Selection = selection ?? new();
         }
     }
 
@@ -62,17 +55,6 @@ public sealed partial class PaperComponent : Component
         public PaperInputTextMessage(string text)
         {
             Text = text;
-        }
-    }
-
-    [Serializable, NetSerializable]
-    public sealed class PaperFieldRequestMessage : BoundUserInterfaceMessage
-    {
-        public readonly string Placeholder;
-
-        public PaperFieldRequestMessage(string placeholder)
-        {
-            Placeholder = placeholder;
         }
     }
 

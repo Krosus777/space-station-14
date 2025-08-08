@@ -33,6 +33,12 @@ public sealed partial class FormDocumentComponent : Component
     public Dictionary<string, string> Selection = new();
 
     /// <summary>
+    ///     Placeholders that still require user selection before the form can open.
+    /// </summary>
+    [DataField]
+    public List<string> Pending = new();
+
+    /// <summary>
     ///     Whether automatic fields have already been filled.
     /// </summary>
     [DataField("filled"), AutoNetworkedField]

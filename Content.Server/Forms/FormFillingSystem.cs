@@ -35,16 +35,29 @@ public sealed class FormFillingSystem : EntitySystem
         if (entity.Comp.Filled)
             return;
 
+        entity.Comp.Pending.Clear();
+
         var text = entity.Comp.Content;
 
-        if (text.Contains("[JOB]"))
-            entity.Comp.Dropdown.TryAdd("[JOB]", new List<string>());
         if (text.Contains("[FIO]"))
-            entity.Comp.Dropdown.TryAdd("[FIO]", new List<string>());
+        {
+            var options = new List<string>();
+            foreach (var session in _playerManager.Sessions)
+            {
+                if (session.AttachedEntity is { Valid: true } attached)
+                    options.Add(MetaData(attached).EntityName);
+            }
+            entity.Comp.Dropdown["[FIO]"] = options;
+            entity.Comp.Pending.Add("[FIO]");
+        }
 
-        var name = MetaData(args.User).EntityName;
-        text = text.Replace("[FIO]", name).Replace("[NAME]", name);
-        entity.Comp.Selection["[FIO]"] = name;
+        if (text.Contains("[JOB]"))
+        {
+            var options = _prototypeManager.EnumeratePrototypes<JobPrototype>()
+                .Select(p => p.LocalizedName).ToList();
+            entity.Comp.Dropdown["[JOB]"] = options;
+            entity.Comp.Pending.Add("[JOB]");
+        }
 
         var stationName = string.Empty;
         var station = _stationSystem.GetCurrentStation(args.User);
@@ -58,12 +71,26 @@ public sealed class FormFillingSystem : EntitySystem
         text = text.Replace("[DATE]", date);
         entity.Comp.Selection["[DATE]"] = date;
 
-        foreach (var (placeholder, chosen) in entity.Comp.Selection)
-            text = text.Replace(placeholder, chosen);
-
         _formSystem.SetContent((entity.Owner, entity.Comp), text);
-        entity.Comp.Filled = true;
         Dirty(entity.Owner, entity.Comp);
+
+        if (entity.Comp.Pending.Count > 0)
+        {
+            OpenNextField(entity, args.User);
+            return;
+        }
+
+        entity.Comp.Filled = true;
+        entity.Comp.Mode = FormDocumentComponent.FormAction.Write;
+        _uiSystem.OpenUi(entity.Owner, FormDocumentComponent.FormUiKey.Key, args.User);
+    }
+
+    private void OpenNextField(Entity<FormDocumentComponent> entity, EntityUid user)
+    {
+        var placeholder = entity.Comp.Pending[0];
+        var options = entity.Comp.Dropdown[placeholder];
+        _uiSystem.OpenUi(entity.Owner, FormFieldUiKey.Key, user);
+        _uiSystem.SetUiState(entity.Owner, FormFieldUiKey.Key, new FormFieldUiState(placeholder, options));
     }
 
     private void OnFieldRequest(Entity<FormDocumentComponent> entity, ref FormDocumentComponent.FormFieldRequestMessage args)
@@ -112,6 +139,20 @@ public sealed class FormFillingSystem : EntitySystem
         _formSystem.SetContent((entity.Owner, entity.Comp), text);
         Dirty(entity.Owner, entity.Comp);
 
+        if (entity.Comp.Pending.Count > 0 && entity.Comp.Pending[0] == msg.Placeholder)
+            entity.Comp.Pending.RemoveAt(0);
+
+        if (entity.Comp.Pending.Count > 0)
+        {
+            var next = entity.Comp.Pending[0];
+            var options = entity.Comp.Dropdown[next];
+            _uiSystem.SetUiState(entity.Owner, FormFieldUiKey.Key, new FormFieldUiState(next, options));
+            return;
+        }
+
+        entity.Comp.Filled = true;
+        entity.Comp.Mode = FormDocumentComponent.FormAction.Write;
         _uiSystem.CloseUi(entity.Owner, FormFieldUiKey.Key, msg.Actor);
+        _uiSystem.OpenUi(entity.Owner, FormDocumentComponent.FormUiKey.Key, msg.Actor);
     }
 }
