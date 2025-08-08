@@ -55,20 +55,27 @@ public sealed partial class FormWindow : BaseWindow
 
     public TextEdit Input => InputField;
 
+    private int _maxInputLength = -1;
     public int MaxInputLength
     {
-        get => Input.MaxLength;
-        set => Input.MaxLength = value;
+        get => _maxInputLength;
+        set
+        {
+            _maxInputLength = value;
+            UpdateFillState();
+        }
     }
 
     private void RunOnSaved()
     {
-        OnSaved?.Invoke(Input.Text);
+        OnSaved?.Invoke(Rope.Collapse(Input.TextRope));
     }
 
     public void Populate(FormDocumentComponent.FormBoundUserInterfaceState state)
     {
-        Input.Text = state.Text;
+        Input.TextRope = Rope.Leaf.Empty;
+        Input.CursorPosition = new TextEdit.CursorPos();
+        Input.InsertAtCursor(state.Text);
         _dropdown = state.Dropdown;
         _selection = state.Selection;
     }
@@ -106,5 +113,17 @@ public sealed partial class FormWindow : BaseWindow
         }
 
         return null;
+    }
+
+    private void UpdateFillState()
+    {
+        if (_maxInputLength != -1)
+        {
+            SaveButton.Disabled = Input.TextLength > _maxInputLength;
+        }
+        else
+        {
+            SaveButton.Disabled = false;
+        }
     }
 }

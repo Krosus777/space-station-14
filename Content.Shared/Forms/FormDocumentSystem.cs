@@ -45,15 +45,16 @@ public sealed class FormDocumentSystem : EntitySystem
     {
         if (msg.Text.Length > entity.Comp.ContentSize)
             return;
-        SetContent(entity, msg.Text);
+
+        SetContent(entity, msg.Text, msg.Actor);
     }
 
-    public void SetContent(Entity<FormDocumentComponent> entity, string text)
+    public void SetContent(Entity<FormDocumentComponent> entity, string text, EntityUid? user = null)
     {
         entity.Comp.Content = text;
         Dirty(entity);
         UpdateUi(entity);
-        _audio.PlayPredicted(entity.Comp.Sound, entity.Owner);
+        _audio.PlayPredicted(entity.Comp.Sound, entity.Owner, user);
     }
 
     private void UpdateUi(Entity<FormDocumentComponent> entity)
