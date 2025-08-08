@@ -1,0 +1,16 @@
+<DefaultWindow xmlns="https://spacestation14.io"
+              Title="{Loc 'paper-form-picker-title'}"
+              SetSize="350 400"
+              MinSize="350 200">
+    <PanelContainer VerticalExpand="True" HorizontalExpand="True">
+        <BoxContainer Orientation="Vertical" Margin="6">
+            <LineEdit Name="Search" HorizontalExpand="True" PlaceHolder="{Loc 'paper-form-picker-search'}" />
+            <ScrollContainer VerticalExpand="True" Margin="0 4 0 4">
+                <ItemList Name="Options" SelectMode="Single" HorizontalExpand="True" />
+            </ScrollContainer>
+            <BoxContainer Orientation="Horizontal" HorizontalAlignment="Right" Margin="4 4 0 0">
+                <Button Name="Confirm" />
+            </BoxContainer>
+        </BoxContainer>
+    </PanelContainer>
+</DefaultWindow>
