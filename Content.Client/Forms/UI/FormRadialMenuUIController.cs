@@ -26,7 +26,6 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
 
     private SimpleRadialMenu? _menu;
     private PaperWindow? _paperWindow;
-    private EntityUid? _paperEntity;
 
     public void OnStateEntered(GameplayState state)
     {
@@ -49,7 +48,6 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
 
     private void OnPaperOpened(EntityUid uid, PaperWindow window)
     {
-        _paperEntity = uid;
         _paperWindow = window;
     }
 
@@ -58,7 +56,6 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
         if (_paperWindow == window)
         {
             _paperWindow = null;
-            _paperEntity = null;
         }
     }
 
@@ -119,9 +116,10 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
     private List<string> GetOptions(string placeholder)
     {
         var list = new List<string>();
-        if (_paperEntity != null &&
-            _entMan.TryGetComponent<PaperFormComponent>(_paperEntity.Value, out var form) &&
-            form.Dropdown.TryGetValue(placeholder, out var opts))
+        var player = _players.LocalEntity;
+        if (player != null &&
+            _entMan.TryGetComponent<FormRadialComponent>(player.Value, out var radial) &&
+            radial.Dropdown.TryGetValue(placeholder, out var opts))
         {
             list.AddRange(opts);
         }
@@ -132,18 +130,13 @@ public sealed class FormRadialMenuUIController : UIController, IOnStateChanged<G
         if (placeholder == "[JOB]")
         {
             foreach (var proto in _prototypeManager.EnumeratePrototypes<JobPrototype>())
-            {
                 list.Add(proto.LocalizedName);
-            }
         }
-        else if (placeholder == "[FIO]")
+        else if (placeholder == "[FIO]" && player != null)
         {
-            var player = _players.LocalEntity;
-            if (player != null)
-            {
-                list.Add(_entMan.GetComponent<MetaDataComponent>(player.Value).EntityName);
-            }
+            list.Add(_entMan.GetComponent<MetaDataComponent>(player.Value).EntityName);
         }
+
         return list;
     }
 }

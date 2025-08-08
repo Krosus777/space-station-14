@@ -260,6 +260,7 @@
     shiveringHeatRegulation: 2000
     normalBodyTemperature: 310.15
     thermalRegulationTemperatureThreshold: 2
+  - type: FormRadial
   - type: Perishable
   - type: Butcherable
     butcheringType: Spike # TODO human.
