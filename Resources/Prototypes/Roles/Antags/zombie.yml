@@ -17,6 +17,9 @@
     components:
     - ZombieImmune
     - AntagImmune
+    # Corvax-only block start: IPCs are excluded from InitialInfected selection because they are immune by design.
+    - Ipc
+    # Corvax-only block end
   briefing:
     text: zombie-patientzero-role-greeting
     color: Plum

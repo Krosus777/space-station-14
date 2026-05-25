@@ -178,6 +178,11 @@ public sealed partial class AntagSelectionSystem
         if (!_whitelist.CheckBoth(uid, def.Blacklist, def.Whitelist))
             return false;
 
+        // Corvax-only block start: IPCs are immune by design, so exclude them before antag setup runs.
+        if (TryComp<HumanoidProfileComponent>(uid.Value, out var humanoidProfile) && humanoidProfile.Species == "Ipc")
+            return false;
+        // Corvax-only block end
+
         if (_arrivals.IsOnArrivals((uid.Value, null)))
             return false;
 
