@@ -587,6 +587,14 @@ public sealed partial class AntagSelectionSystem : GameRuleSystem<AntagSelection
         if (entity == null)
             return true;
 
+        // Corvax fix start: IPCs are immune by design, so exclude them before antag setup runs.
+        // The species is already known here through the humanoid profile even when the IPC-specific component
+        // has not been attached yet.
+        if (TryComp<HumanoidProfileComponent>(entity, out var humanoidProfile)
+            && humanoidProfile.Species == "Ipc")
+            return false;
+        // Corvax fix end
+
         if (_arrivals.IsOnArrivals((entity.Value, null)))
             return false;
 
