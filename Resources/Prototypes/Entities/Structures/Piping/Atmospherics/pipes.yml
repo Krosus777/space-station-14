@@ -57,6 +57,7 @@
   - type: AtmosUnsafeUnanchor
   - type: AtmosPipeColor
   - type: AtmosMonitoringConsoleDevice
+  - type: CorvaxVentCrawlable
   - type: Tag
     tags:
     - Pipe

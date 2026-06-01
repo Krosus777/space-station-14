@@ -51,6 +51,12 @@ public sealed class TrayScannerSystem : SharedTrayScannerSystem
         var canSee = false;
 
         // TODO: Common iterator for both systems.
+        if (_trayScannerQuery.TryGetComponent(player, out var selfScanner) && selfScanner.Enabled)
+        {
+            canSee = true;
+            range = MathF.Max(range, selfScanner.Range);
+        }
+
         if (_inventory.TryGetContainerSlotEnumerator(player.Value, out var enumerator))
         {
             while (enumerator.MoveNext(out var slot))
@@ -87,8 +93,13 @@ public sealed class TrayScannerSystem : SharedTrayScannerSystem
 
             foreach (var (uid, comp) in inRange)
             {
-                if (comp.IsUnderCover || _trayScanReveal.IsUnderRevealingEntity(uid))
+                var underReveal = _trayScanReveal.IsUnderRevealingEntity(uid);
+
+                if (comp.IsUnderCover || underReveal)
+                {
                     EnsureComp<TrayRevealedComponent>(uid);
+                    SetRevealedThroughCover(uid, comp.IsUnderCover && underReveal);
+                }
             }
         }
 
@@ -138,12 +149,14 @@ public sealed class TrayScannerSystem : SharedTrayScannerSystem
                 if (sprite.Color.A <= 0f)
                 {
                     SetRevealed(uid, false);
+                    SetRevealedThroughCover(uid, false);
                     RemCompDeferred<TrayRevealedComponent>(uid);
                     _sprite.SetColor((uid, sprite), sprite.Color.WithAlpha(1f));
                     continue;
                 }
 
                 SetRevealed(uid, true);
+                SetRevealedThroughCover(uid, false);
 
                 if (_animation.HasRunningAnimation(uid, TRayAnimationKey))
                     continue;
@@ -172,5 +185,10 @@ public sealed class TrayScannerSystem : SharedTrayScannerSystem
     private void SetRevealed(EntityUid uid, bool value)
     {
         _appearance.SetData(uid, SubFloorVisuals.ScannerRevealed, value);
+    }
+
+    private void SetRevealedThroughCover(EntityUid uid, bool value)
+    {
+        _appearance.SetData(uid, SubFloorVisuals.ScannerRevealedThroughCover, value);
     }
 }
