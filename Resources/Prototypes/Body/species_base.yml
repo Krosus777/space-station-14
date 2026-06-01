@@ -106,6 +106,7 @@
   - type: SSDIndicator
   - type: StandingState
   - type: Crawler
+  - type: CorvaxVentCrawler
   - type: Dna
   - type: MindContainer
   - type: MindExaminable

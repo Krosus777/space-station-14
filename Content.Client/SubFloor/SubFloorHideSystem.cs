@@ -60,10 +60,12 @@ public sealed class SubFloorHideSystem : SharedSubFloorHideSystem
 
         _appearance.TryGetData<bool>(uid, SubFloorVisuals.Covered, out var covered, args.Component);
         _appearance.TryGetData<bool>(uid, SubFloorVisuals.ScannerRevealed, out var scannerRevealed, args.Component);
+        _appearance.TryGetData<bool>(uid, SubFloorVisuals.ScannerRevealedThroughCover, out var scannerRevealedThroughCover, args.Component);
 
         scannerRevealed &= !ShowAll; // no transparency for show-subfloor mode.
+        scannerRevealedThroughCover &= !ShowAll;
 
-        var revealed = !covered || ShowAll || scannerRevealed;
+        var revealed = !covered || ShowAll || scannerRevealed || scannerRevealedThroughCover;
 
         // set visibility & color of each layer
         foreach (var layer in args.Sprite.AllLayers)
@@ -90,6 +92,12 @@ public sealed class SubFloorHideSystem : SharedSubFloorHideSystem
         if (ShowAll)
         {
             // Allows sandbox mode to make wires visible over other stuff.
+            component.OriginalDrawDepth ??= args.Sprite.DrawDepth;
+            _sprite.SetDrawDepth((uid, args.Sprite), (int)Shared.DrawDepth.DrawDepth.Overdoors);
+        }
+        else if (scannerRevealedThroughCover)
+        {
+            // Allows tray-scanned pipes under walls/doors to be visible above the cover.
             component.OriginalDrawDepth ??= args.Sprite.DrawDepth;
             _sprite.SetDrawDepth((uid, args.Sprite), (int)Shared.DrawDepth.DrawDepth.Overdoors);
         }

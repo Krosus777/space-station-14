@@ -226,6 +226,11 @@ namespace Content.Shared.SubFloor
         /// Is this entity revealed by a scanner or some other entity?
         /// </summary>
         ScannerRevealed,
+
+        /// <summary>
+        /// Is this entity revealed by a scanner through an occluder such as a wall or door?
+        /// </summary>
+        ScannerRevealedThroughCover,
     }
 
     [Serializable, NetSerializable]
