@@ -68,9 +68,11 @@ public sealed partial class DiscordWebhook : IPostInjectInit
     /// <param name="identifier">The identifier for the webhook url.</param>
     /// <param name="payload">The payload to create the message from.</param>
     /// <returns>The response from Discord's API.</returns>
-    public async Task<HttpResponseMessage> CreateMessage(WebhookIdentifier identifier, WebhookPayload payload)
+    public async Task<HttpResponseMessage> CreateMessage(WebhookIdentifier identifier, WebhookPayload payload, ulong? threadId = null)
     {
-        var url = $"{GetUrl(identifier)}?wait=true";
+        var url = threadId == null
+            ? $"{GetUrl(identifier)}?wait=true"
+            : $"{GetUrl(identifier)}?wait=true&thread_id={threadId.Value}";
         var response = await _http.PostAsJsonAsync(url, payload, JsonOptions);
 
         LogResponse(response, "Create");
@@ -101,9 +103,11 @@ public sealed partial class DiscordWebhook : IPostInjectInit
     /// <param name="messageId">The message id to edit.</param>
     /// <param name="payload">The payload used to edit the message.</param>
     /// <returns>The response from Discord's API.</returns>
-    public async Task<HttpResponseMessage> EditMessage(WebhookIdentifier identifier, ulong messageId, WebhookPayload payload)
+    public async Task<HttpResponseMessage> EditMessage(WebhookIdentifier identifier, ulong messageId, WebhookPayload payload, ulong? threadId = null)
     {
-        var url = $"{GetUrl(identifier)}/messages/{messageId}";
+        var url = threadId == null
+            ? $"{GetUrl(identifier)}/messages/{messageId}"
+            : $"{GetUrl(identifier)}/messages/{messageId}?thread_id={threadId.Value}";
         var response = await _http.PatchAsJsonAsync(url, payload, JsonOptions);
 
         LogResponse(response, "Edit");

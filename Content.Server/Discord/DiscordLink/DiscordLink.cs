@@ -249,5 +249,32 @@ public sealed partial class DiscordLink : IPostInjectInit
         });
     }
 
+    /// <summary>
+    /// Corvax: starts a thread from a published root ahelp message.
+    /// </summary>
+    public async Task<GuildThread?> CreateThreadFromMessageAsync(ulong channelId, ulong messageId, string threadName)
+    {
+        if (_client == null)
+            return null;
+
+        return await _client.Rest.CreateGuildThreadAsync(
+            channelId,
+            messageId,
+            new GuildThreadFromMessageProperties(threadName),
+            new RestRequestProperties(),
+            default);
+    }
+
+    /// <summary>
+    /// Corvax: joins a thread so the bot can observe messages inside it.
+    /// </summary>
+    public async Task JoinThreadAsync(ulong threadId)
+    {
+        if (_client == null)
+            return;
+
+        await _client.Rest.JoinGuildThreadAsync(threadId, new RestRequestProperties(), default);
+    }
+
     #endregion
 }

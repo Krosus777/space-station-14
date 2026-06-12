@@ -395,8 +395,10 @@ namespace Content.Server.Administration.Systems
 
         private async void ProcessQueue(NetUserId userId, Queue<DiscordRelayedData> messages)
         {
-            // Whether an embed already exists for this player
-            var exists = _relayMessages.TryGetValue(userId, out var existingEmbed);
+            try
+            {
+                // Whether an embed already exists for this player
+                var exists = _relayMessages.TryGetValue(userId, out var existingEmbed);
 
             // Whether the message will become too long after adding these new messages
             var tooLong = exists && messages.Sum(msg => Math.Min(msg.Message.Length, MessageLengthCap) + "\n".Length)
@@ -482,50 +484,65 @@ namespace Content.Server.Administration.Systems
             var payload = GeneratePayload(existingEmbed.Description,
                 existingEmbed.Username,
                 existingEmbed.CharacterName);
-
-            // If there is no existing embed, create a new one
-            // Otherwise patch (edit) it
-            if (existingEmbed.Id == null)
+            var bridgeResult = await PublishDiscordAHelpAsync(new Content.Server.Corvax.Discord.AHelpDiscordPublishRequest(userId, payload, onCallRelay));
+            if (bridgeResult != null)
             {
-                var request = await _httpClient.PostAsync($"{_webhookUrl}?wait=true",
-                    new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                var content = await request.Content.ReadAsStringAsync();
-                if (!request.IsSuccessStatusCode)
-                {
-                    _sawmill.Log(LogLevel.Error,
-                        $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
-                }
-
-                var id = JsonNode.Parse(content)?["id"];
-                if (id == null)
-                {
-                    _sawmill.Log(LogLevel.Error,
-                        $"Could not find id in json-content returned from discord webhook: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
-                }
-
-                existingEmbed.Id = id.ToString();
+                existingEmbed.Id = bridgeResult.Value.RootMessageId.ToString();
+                _relayMessages[userId] = existingEmbed;
+            }
+            else if (OnDiscordAHelpPublishRequested != null)
+            {
+                _sawmill.Log(LogLevel.Error,
+                    $"Discord ahelp bridge is installed but failed to publish message for user {userId}; skipping direct webhook fallback to avoid duplicate posts.");
+                _relayMessages.Remove(userId);
+                return;
             }
             else
             {
-                var request = await _httpClient.PatchAsync($"{_webhookUrl}/messages/{existingEmbed.Id}",
-                    new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                if (!request.IsSuccessStatusCode)
+                // If there is no existing embed, create a new one
+                // Otherwise patch (edit) it
+                if (existingEmbed.Id == null)
                 {
-                    var content = await request.Content.ReadAsStringAsync();
-                    _sawmill.Log(LogLevel.Error,
-                        $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
-                }
-            }
+                    var request = await _httpClient.PostAsync($"{_webhookUrl}?wait=true",
+                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
 
-            _relayMessages[userId] = existingEmbed;
+                    var content = await request.Content.ReadAsStringAsync();
+                    if (!request.IsSuccessStatusCode)
+                    {
+                        _sawmill.Log(LogLevel.Error,
+                            $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
+
+                    var id = JsonNode.Parse(content)?["id"];
+                    if (id == null)
+                    {
+                        _sawmill.Log(LogLevel.Error,
+                            $"Could not find id in json-content returned from discord webhook: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
+
+                    existingEmbed.Id = id.ToString();
+                }
+                else
+                {
+                    var request = await _httpClient.PatchAsync($"{_webhookUrl}/messages/{existingEmbed.Id}",
+                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
+
+                    if (!request.IsSuccessStatusCode)
+                    {
+                        var content = await request.Content.ReadAsStringAsync();
+                        _sawmill.Log(LogLevel.Error,
+                            $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
+                }
+
+                _relayMessages[userId] = existingEmbed;
+            }
 
             // Actually do the on call relay last, we just need to grab it before we dequeue every message above.
             if (onCallRelay &&
@@ -563,8 +580,11 @@ namespace Content.Server.Administration.Systems
             {
                 existingEmbed.OnCall = false;
             }
-
-            _processingChannels.Remove(userId);
+        }
+            finally
+            {
+                _processingChannels.Remove(userId);
+            }
         }
 
         private WebhookPayload GeneratePayload(string messages, string username, string? characterName = null)
