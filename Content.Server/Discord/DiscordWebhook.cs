@@ -72,7 +72,7 @@ public sealed partial class DiscordWebhook : IPostInjectInit
     {
         var url = threadId == null
             ? $"{GetUrl(identifier)}?wait=true"
-            : $"{GetUrl(identifier)}?wait=true&thread_id={threadId.Value}";
+            : $"{GetUrl(identifier)}?wait=true&thread_id={threadId.Value}"; // Corvax: optionally targets a Discord thread.
         var response = await _http.PostAsJsonAsync(url, payload, JsonOptions);
 
         LogResponse(response, "Create");
@@ -107,7 +107,7 @@ public sealed partial class DiscordWebhook : IPostInjectInit
     {
         var url = threadId == null
             ? $"{GetUrl(identifier)}/messages/{messageId}"
-            : $"{GetUrl(identifier)}/messages/{messageId}?thread_id={threadId.Value}";
+            : $"{GetUrl(identifier)}/messages/{messageId}?thread_id={threadId.Value}"; // Corvax: optionally edits a message inside a Discord thread.
         var response = await _http.PatchAsJsonAsync(url, payload, JsonOptions);
 
         LogResponse(response, "Edit");

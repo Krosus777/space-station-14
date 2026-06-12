@@ -8,9 +8,9 @@ namespace Content.Server.Administration.Systems
 {
     public sealed partial class BwoinkSystem
     {
-        public event Func<AHelpDiscordPublishRequest, Task<AHelpDiscordPublishResult?>>? OnDiscordAHelpPublishRequested;
+        public event Func<AHelpDiscordPublishRequest, Task<AHelpDiscordPublishResult?>>? OnDiscordAHelpPublishRequested; // Corvax: external ahelp bridge publishes and mirrors Discord relay state.
 
-        private async Task<AHelpDiscordPublishResult?> PublishDiscordAHelpAsync(AHelpDiscordPublishRequest request)
+        private async Task<AHelpDiscordPublishResult?> PublishDiscordAHelpAsync(AHelpDiscordPublishRequest request) // Corvax: allow the bridge to own Discord delivery while the base bwoink flow stays unchanged.
         {
             var handlers = OnDiscordAHelpPublishRequested;
             if (handlers == null)
@@ -25,7 +25,7 @@ namespace Content.Server.Administration.Systems
             return result;
         }
 
-        public void ReceiveExternalAHelpMessage(NetUserId userId, string text, string senderName)
+        public void ReceiveExternalAHelpMessage(NetUserId userId, string text, string senderName) // Corvax: import Discord thread replies back into in-game bwoinks.
         {
             _activeConversations[userId] = DateTime.Now;
 

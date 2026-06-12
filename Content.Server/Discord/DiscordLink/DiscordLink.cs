@@ -249,10 +249,7 @@ public sealed partial class DiscordLink : IPostInjectInit
         });
     }
 
-    /// <summary>
-    /// Corvax: starts a thread from a published root ahelp message.
-    /// </summary>
-    public async Task<GuildThread?> CreateThreadFromMessageAsync(ulong channelId, ulong messageId, string threadName)
+    public async Task<GuildThread?> CreateThreadFromMessageAsync(ulong channelId, ulong messageId, string threadName) // Corvax: starts a thread from a published root ahelp message.
     {
         if (_client == null)
             return null;
@@ -265,10 +262,7 @@ public sealed partial class DiscordLink : IPostInjectInit
             default);
     }
 
-    /// <summary>
-    /// Corvax: joins a thread so the bot can observe messages inside it.
-    /// </summary>
-    public async Task JoinThreadAsync(ulong threadId)
+    public async Task JoinThreadAsync(ulong threadId) // Corvax: joins a thread so the bot can observe messages inside it.
     {
         if (_client == null)
             return;

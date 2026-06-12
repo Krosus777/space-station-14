@@ -484,13 +484,14 @@ namespace Content.Server.Administration.Systems
             var payload = GeneratePayload(existingEmbed.Description,
                 existingEmbed.Username,
                 existingEmbed.CharacterName);
-            var bridgeResult = await PublishDiscordAHelpAsync(new Content.Server.Corvax.Discord.AHelpDiscordPublishRequest(userId, payload, onCallRelay));
+
+            var bridgeResult = await PublishDiscordAHelpAsync(new Content.Server.Corvax.Discord.AHelpDiscordPublishRequest(userId, payload, onCallRelay)); // Corvax: route ahelp relay through the Discord bridge when it is installed.
             if (bridgeResult != null)
             {
                 existingEmbed.Id = bridgeResult.Value.RootMessageId.ToString();
                 _relayMessages[userId] = existingEmbed;
             }
-            else if (OnDiscordAHelpPublishRequested != null)
+            else if (OnDiscordAHelpPublishRequested != null) // Corvax: do not fall back to the legacy webhook path when the bridge exists.
             {
                 _sawmill.Log(LogLevel.Error,
                     $"Discord ahelp bridge is installed but failed to publish message for user {userId}; skipping direct webhook fallback to avoid duplicate posts.");
