@@ -483,53 +483,92 @@ namespace Content.Server.Administration.Systems
                 existingEmbed.Username,
                 existingEmbed.CharacterName);
 
-            var handledByBridge = await TryPublishDiscordAHelpBridgeAsync(userId, existingEmbed, payload, onCallRelay);
-            if (!handledByBridge)
-            {
+            var bridgeState = await TryPublishDiscordAHelpBridgeAsync(userId, existingEmbed, payload);
+            if (bridgeState == BridgePublishResult.Failed)
+                return;
 
-            // If there is no existing embed, create a new one
-            // Otherwise patch (edit) it
-            if (existingEmbed.Id == null)
+            if (bridgeState == BridgePublishResult.Fallback)
             {
-                var request = await _httpClient.PostAsync($"{_webhookUrl}?wait=true",
-                    new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                var content = await request.Content.ReadAsStringAsync();
-                if (!request.IsSuccessStatusCode)
+                // If there is no existing embed, create a new one
+                // Otherwise patch (edit) it
+                if (existingEmbed.Id == null)
                 {
-                    _sawmill.Log(LogLevel.Error,
-                        $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
+                    var request = await _httpClient.PostAsync($"{_webhookUrl}?wait=true",
+                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
+
+                    var content = await request.Content.ReadAsStringAsync();
+                    if (!request.IsSuccessStatusCode)
+                    {
+                        _sawmill.Log(LogLevel.Error,
+                            $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
+
+                    var id = JsonNode.Parse(content)?["id"];
+                    if (id == null)
+                    {
+                        _sawmill.Log(LogLevel.Error,
+                            $"Could not find id in json-content returned from discord webhook: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
+
+                    existingEmbed.Id = id.ToString();
+                }
+                else
+                {
+                    var request = await _httpClient.PatchAsync($"{_webhookUrl}/messages/{existingEmbed.Id}",
+                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
+
+                    if (!request.IsSuccessStatusCode)
+                    {
+                        var content = await request.Content.ReadAsStringAsync();
+                        _sawmill.Log(LogLevel.Error,
+                            $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
+                        _relayMessages.Remove(userId);
+                        return;
+                    }
                 }
 
-                var id = JsonNode.Parse(content)?["id"];
-                if (id == null)
-                {
-                    _sawmill.Log(LogLevel.Error,
-                        $"Could not find id in json-content returned from discord webhook: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
-                }
+                _relayMessages[userId] = existingEmbed;
+            }
 
-                existingEmbed.Id = id.ToString();
+            // Actually do the on call relay last, we just need to grab it before we dequeue every message above.
+            if (onCallRelay &&
+                _onCallData != null)
+            {
+                existingEmbed.OnCall = true;
+                var roleMention = _config.GetCVar(CCVars.DiscordAhelpMention);
+
+                if (!string.IsNullOrEmpty(roleMention))
+                {
+                    var message = new StringBuilder();
+                    message.AppendLine($"<@&{roleMention}>");
+                    message.AppendLine("Unanswered SOS");
+
+                    // Need webhook data to get the correct link for that channel rather than on-call data.
+                    if (_webhookData is { GuildId: { } guildId, ChannelId: { } channelId })
+                    {
+                        message.AppendLine(
+                            $"**[Go to ahelp](https://discord.com/channels/{guildId}/{channelId}/{existingEmbed.Id})**");
+                    }
+
+                    payload = GeneratePayload(message.ToString(), existingEmbed.Username, existingEmbed.CharacterName);
+
+                    var request = await _httpClient.PostAsync($"{_onCallUrl}?wait=true",
+                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
+
+                    var content = await request.Content.ReadAsStringAsync();
+                    if (!request.IsSuccessStatusCode)
+                    {
+                        _sawmill.Log(LogLevel.Error, $"Discord returned bad status code when posting relay message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
+                    }
+                }
             }
             else
             {
-                var request = await _httpClient.PatchAsync($"{_webhookUrl}/messages/{existingEmbed.Id}",
-                    new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                if (!request.IsSuccessStatusCode)
-                {
-                    var content = await request.Content.ReadAsStringAsync();
-                    _sawmill.Log(LogLevel.Error,
-                        $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                    _relayMessages.Remove(userId);
-                    return;
-                }
-            }
-
-            _relayMessages[userId] = existingEmbed;
+                existingEmbed.OnCall = false;
             }
 
             _processingChannels.Remove(userId);
