@@ -169,7 +169,7 @@ public sealed partial class AHelpDiscordBridgeSystem : EntitySystem, IPostInject
     {
         if (!TryGetUserByThread(message.ChannelId, out var userId))
         {
-            _sawmill.Debug($"Ignoring Discord message in unmapped channel {message.ChannelId} from {message.Author.Username}.");
+            _sawmill.Debug($"Ignoring Discord message in unmapped channel {message.ChannelId} from {GetDiscordGuildName(message)}.");
             return;
         }
 
@@ -185,12 +185,12 @@ public sealed partial class AHelpDiscordBridgeSystem : EntitySystem, IPostInject
             return;
         }
 
-        _sawmill.Info($"Discord thread message received id={message.Id} channel={message.ChannelId} author={message.Author.Username} bot={message.Author.IsBot} webhook={(message.WebhookId != null)} contentLength={message.Content.Length}");
+        _sawmill.Info($"Discord thread message received id={message.Id} channel={message.ChannelId} author={GetDiscordGuildName(message)} bot={message.Author.IsBot} webhook={(message.WebhookId != null)} contentLength={message.Content.Length}");
 
         if (message.Author.IsBot || message.WebhookId != null)
             return;
 
-        var senderName = message.Author.Username;
+        var senderName = GetDiscordGuildName(message);
 
         var cleanText = message.Content.ReplaceLineEndings(" ");
         if (string.IsNullOrWhiteSpace(cleanText))
@@ -302,7 +302,7 @@ public sealed partial class AHelpDiscordBridgeSystem : EntitySystem, IPostInject
         }
 
         var targetName = string.IsNullOrWhiteSpace(targetPlayer.Username) ? targetCkey : targetPlayer.Username;
-        var createdBy = string.IsNullOrWhiteSpace(ev.Message.Author.Username) ? "Discord" : ev.Message.Author.Username;
+        var createdBy = GetDiscordGuildName(ev.Message);
 
         var payload = new WebhookPayload
         {
@@ -351,6 +351,21 @@ public sealed partial class AHelpDiscordBridgeSystem : EntitySystem, IPostInject
         {
             return _byUser.TryGetValue(userId, out var mapping) ? mapping : null;
         }
+    }
+
+    private static string GetDiscordGuildName(Message message)
+    {
+        if (message.Guild != null &&
+            message.Guild.Users.TryGetValue(message.Author.Id, out var guildUser))
+        {
+            if (!string.IsNullOrWhiteSpace(guildUser.Nickname))
+                return guildUser.Nickname;
+
+            if (!string.IsNullOrWhiteSpace(guildUser.Username))
+                return guildUser.Username;
+        }
+
+        return string.IsNullOrWhiteSpace(message.Author.GlobalName) ? message.Author.Username : message.Author.GlobalName;
     }
 
     private static ulong? ParseDiscordId(string content)
