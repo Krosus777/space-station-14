@@ -30,21 +30,6 @@ namespace Content.Server.Administration.Systems
             return result;
         }
 
-        private async Task<AHelpDiscordPublishResult?> TryPublishDiscordAHelpAsync(NetUserId userId, WebhookPayload payload, bool onCallRelay) // Corvax: keep the core bwoink file on a single bridge call and isolate Discord transport here.
-        {
-            var handlers = OnDiscordAHelpPublishRequested;
-            if (handlers == null)
-                return null;
-
-            AHelpDiscordPublishResult? result = null;
-            foreach (Func<AHelpDiscordPublishRequest, Task<AHelpDiscordPublishResult?>> handler in handlers.GetInvocationList())
-            {
-                result = await handler(new AHelpDiscordPublishRequest(userId, payload, onCallRelay));
-            }
-
-            return result;
-        }
-
         public void ReceiveExternalAHelpMessage(NetUserId userId, string text, string senderName) // Corvax: import Discord thread replies back into in-game bwoinks.
         {
             _activeConversations[userId] = DateTime.Now;

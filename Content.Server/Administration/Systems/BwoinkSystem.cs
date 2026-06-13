@@ -485,7 +485,7 @@ namespace Content.Server.Administration.Systems
                 existingEmbed.Username,
                 existingEmbed.CharacterName);
 
-            var bridgeResult = await TryPublishDiscordAHelpAsync(userId, payload, onCallRelay);
+            var bridgeResult = await PublishDiscordAHelpAsync(new Content.Server.Corvax.Discord.AHelpDiscordPublishRequest(userId, payload, onCallRelay));
             if (bridgeResult != null)
             {
                 existingEmbed.Id = bridgeResult.Value.RootMessageId.ToString();
