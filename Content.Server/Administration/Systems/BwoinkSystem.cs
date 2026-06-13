@@ -2,7 +2,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Content.Server.Administration.Managers;
@@ -485,65 +484,8 @@ namespace Content.Server.Administration.Systems
                 existingEmbed.Username,
                 existingEmbed.CharacterName);
 
-            var bridgeResult = await PublishDiscordAHelpAsync(new Content.Server.Corvax.Discord.AHelpDiscordPublishRequest(userId, payload, onCallRelay)); // Corvax: route ahelp relay through the Discord bridge when it is installed.
-            if (bridgeResult != null)
-            {
-                existingEmbed.Id = bridgeResult.Value.RootMessageId.ToString();
-                _relayMessages[userId] = existingEmbed;
-            }
-            else if (OnDiscordAHelpPublishRequested != null) // Corvax: do not fall back to the legacy webhook path when the bridge exists.
-            {
-                _sawmill.Log(LogLevel.Error,
-                    $"Discord ahelp bridge is installed but failed to publish message for user {userId}; skipping direct webhook fallback to avoid duplicate posts.");
-                _relayMessages.Remove(userId);
+            if (!await TryPublishDiscordAHelpAsync(userId, payload, onCallRelay, existingEmbed))
                 return;
-            }
-            else
-            {
-                // If there is no existing embed, create a new one
-                // Otherwise patch (edit) it
-                if (existingEmbed.Id == null)
-                {
-                    var request = await _httpClient.PostAsync($"{_webhookUrl}?wait=true",
-                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                    var content = await request.Content.ReadAsStringAsync();
-                    if (!request.IsSuccessStatusCode)
-                    {
-                        _sawmill.Log(LogLevel.Error,
-                            $"Discord returned bad status code when posting message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                        _relayMessages.Remove(userId);
-                        return;
-                    }
-
-                    var id = JsonNode.Parse(content)?["id"];
-                    if (id == null)
-                    {
-                        _sawmill.Log(LogLevel.Error,
-                            $"Could not find id in json-content returned from discord webhook: {content}");
-                        _relayMessages.Remove(userId);
-                        return;
-                    }
-
-                    existingEmbed.Id = id.ToString();
-                }
-                else
-                {
-                    var request = await _httpClient.PatchAsync($"{_webhookUrl}/messages/{existingEmbed.Id}",
-                        new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json"));
-
-                    if (!request.IsSuccessStatusCode)
-                    {
-                        var content = await request.Content.ReadAsStringAsync();
-                        _sawmill.Log(LogLevel.Error,
-                            $"Discord returned bad status code when patching message (perhaps the message is too long?): {request.StatusCode}\nResponse: {content}");
-                        _relayMessages.Remove(userId);
-                        return;
-                    }
-                }
-
-                _relayMessages[userId] = existingEmbed;
-            }
 
             // Actually do the on call relay last, we just need to grab it before we dequeue every message above.
             if (onCallRelay &&
