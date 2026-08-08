@@ -1,0 +1,13 @@
+# Tier 3
+- type: technology
+  id: BluespaceMining
+  name: research-technology-bluespace-mining
+  icon:
+    sprite: _CorvaxGenesis/Bluespace/harvester.rsi
+    state: tap_0
+  discipline: Experimental
+  tier: 3
+  cost: 10000
+  recipeUnlocks:
+  - MachineBluespaceHarvesterCircuitboard
+  - MachineBluespaceTransitorCircuitboard
