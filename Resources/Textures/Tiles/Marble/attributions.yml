@@ -1,6 +1,6 @@
 - files:
   - dark-marble.png
-  - white-marble
-  license: "CC-BY-SA-3.0"
-  copyright: "By Imaginos16 (GitHub)"
-  source: "https://github.com/shiptest-ss13/Shiptest/blob/0074e283f49378cf125131d873069e2366a7e459/icons/turf/floors/suns.dmi"
+  - white-marble.png
+  license: "CC0-1.0"
+  copyright: "Created by SeaWyrm. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/38007"

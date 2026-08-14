@@ -1,66 +1,101 @@
-# Attempted to keep the files in alphabetical order so its easier to audit.
-# Finding individual authors is an unfeasible task. If you can reference the author please do so.
-
 - files:
-  - plating.png
-  - meat.png
-  - lime.png
-  - silver.png
-  - gold.png
-  - blue.png
-  - freezer.png
-  - reinforced.png
-  - super_reinforced.png
-  - lattice.png
-  - metaldiamond.png
-  - grating-maint.png
-  - web.png
-  license: "CC0-1.0"
-  copyright: "By AftrLite (GitHub)."
-  source: "https://github.com/space-wizards/space-station-14"
-
-- files:
-  - plating-damaged.png
+  - arcadeblue.png
+  - arcadered.png
   license: "CC-BY-SA-3.0"
-  copyright: "Damage overlays by WJohn (GitHub). Plating tile by AftrLite (GitHub)."
-  source: "https://github.com/wall-nerds/wallening/blob/9428d97a4fadf8a486b0c6fbe2ee345a2780e687/icons/turf/damaged.dmi"
-
-- files: ["lino.png"]
-  license: "CC-BY-SA-3.0"
-  copyright: "vgstation13 at roughly commit e4d3ea7f69d21c3667be12b114fa935c4640cb05. Modified by AftrLite (GitHub)."
-  source: "https://github.com/vgstation-coders/vgstation13"
-
-- files: ["arcadeblue.png", "arcadered.png"]
-  license: "CC-BY-SA-3.0"
-  copyright: "arcadered renamed from eightiesred, arcadeblue by Peptide90 modified from arcadered.png, tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49"
+  copyright: "arcadered renamed from eightiesred, arcadeblue by Peptide90 modified from arcadered.png, tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49. Adapted to current tile dimensions and paths for Corvax."
   source: "https://github.com/tgstation/tgstation/"
 
-- files: ["cropped_parallax.png", "eighties.png"]
-  license: "CC-BY-SA-3.0"
-  copyright: "TauCetiStation commit 4cd533cf0a4243050364023af9a4fcaca209dce7"
-  source: "https://github.com/TauCetiStation/TauCetiClassic/"
-
-- files: ["blue_circuit.png", "cropped_parallax.png", "eighties.png", "gold.png", "ironsand1.png", "ironsand2.png", "ironsand3.png", "ironsand4.png", "lattice.png", "plating.png", "reinforced.png", "silver.png", "snow.png", "wood.png"]
-  license: "CC-BY-SA-3.0"
-  copyright: "tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49, cropped_parallax modified from parallax, [reinforced, snow] modified by Ko4erga (discord), wood resprited by Meowstushka and modified by Ko4erga (discord)"
-  source: "https://github.com/tgstation/tgstation/"
-
-- files: ["hull", "hull_reinforced.png"]
-  license: "CC-BY-SA-3.0"
-  copyright: "Taken from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae"
-  source: "https://github.com/space-wizards/space-station-14/pull/18676"
-
-- files: ["arcadeblue2.png", "boxing.png", "carpetclown.png", "carpetoffice.png", "gym.png"]
+- files:
+  - arcadeblue2.png
   license: "CC-BY-NC-SA-3.0"
   copyright: "by WALPVRGIS for Goonstation, taken at commit 236551b95a5b24917c72f3069223026b2dc4e690 from floors.dmi. carpetoffice modified by AftrLite (GitHub)."
   source: "https://github.com/goonstation/goonstation"
 
-- files: ["cave.png"]
-  license: "CC-BY-NC-SA-3.0"
-  copyright: "Mojave-Sun, taken at commit 0587dd16e28108bdf0b0a28e2caae4319845e861"
-  source: "https://github.com/Mojave-Sun/mojave-sun-13"
+- files:
+  - blue.png
+  - lime.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Created by github user @Flareguy, original, unedited base tiles modified from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae and github user @moonheart08. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/"
 
-- files: ["chromite.png"]
+- files:
+  - boxing.png
+  - carpetclown.png
+  - carpetoffice.png
+  - gym.png
+  - metaldiamond.png
   license: "CC-BY-NC-SA-3.0"
-  copyright: "taken at commit 0587dd16e28108bdf0b0a28e2caae4319845e861, and recolored by TheShuEd"
-  source: "https://github.com/Mojave-Sun/mojave-sun-13"
+  copyright: "by WALPVRGIS for Goonstation, taken at commit 236551b95a5b24917c72f3069223026b2dc4e690 from floors.dmi. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/goonstation/goonstation"
+
+- files:
+  - cropped_parallax.png
+  - eighties.png
+  license: "CC-BY-SA-3.0"
+  copyright: "tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49, cropped_parallax modified from parallax, [reinforced, snow] modified by Ko4erga (discord), wood resprited by Meowstushka and modified by Ko4erga (discord)"
+  source: "https://github.com/tgstation/tgstation/"
+
+- files:
+  - foammetal.png
+  - freezer.png
+  - lino.png
+  license: "CC-BY-SA-3.0"
+  copyright: "vgstation13 at roughly commit e4d3ea7f69d21c3667be12b114fa935c4640cb05, asteroid_red and asteroid_tile taken from commit /vg/station at commit 02b9f6894af4419c9f7e699a22c402b086d8067e. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/vgstation-coders/vgstation13"
+
+- files:
+  - gold.png
+  - lattice.png
+  - reinforced.png
+  - silver.png
+  license: "CC-BY-SA-3.0"
+  copyright: "tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49, cropped_parallax modified from parallax. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/tgstation/tgstation/"
+
+- files:
+  - grating-maint.png
+  license: "CC-BY-SA-3.0"
+  copyright: "by brainfood for space-station-14, . Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/12193"
+
+- files:
+  - hull.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/18676"
+
+- files:
+  - hull_reinforced.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/tgstation/tgstation/"
+
+- files:
+  - meat.png
+  license: "CC0-1.0"
+  copyright: "Created by EmoGarbage404 (github) for space-station-14. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/13766"
+
+- files:
+  - plating-damaged.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Modified by github user @Flareguy from plating.png, using damaged plating sprites from /tg/station at commit https://github.com/tgstation/tgstation/blob/6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae/icons/turf/floors.dmi. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/21711"
+
+- files:
+  - plating.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from CEV-Eris commit 8e74e4370f4d5885f15c3f834973b1223ddb8b1b, modified by github user @Flareguy. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/discordia-space/CEV-Eris/"
+
+- files:
+  - super_reinforced.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Modified from reinforced.png by github user @Flareguy. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/18676"
+
+- files:
+  - web.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Created by PixelTK for the arachnid rework. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/19138"

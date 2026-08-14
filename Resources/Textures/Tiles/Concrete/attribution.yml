@@ -1,6 +1,7 @@
 - files:
+  - concrete-mono.png
+  - concrete-smooth.png
   - concrete.png
-  - conrete-mono.png
-  - conrete-smooth.png
-  license: "CC-BY-SA-4.0"
-  copyright: "By AftrLite (GitHub)."
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "Taken from goonstation, modified by EmoGarbage404 (github). Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/goonstation/goonstation/commit/1a76b08389014ec88f703fdb1ae916c2a6e57bd8"

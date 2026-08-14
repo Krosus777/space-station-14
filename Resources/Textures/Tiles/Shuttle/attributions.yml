@@ -7,5 +7,5 @@
   - shuttle-red.png
   - shuttle-white.png
   license: "CC-BY-SA-3.0"
-  copyright: "By Imaginos16 (GitHub), modified by AftrLite (Github)"
-  source: "https://github.com/wall-nerds/wallening/blob/cff5df2e3d45a18afe5619a8c130e1ba50ab4ef5/icons/turf/floors.dmi"
+  copyright: "Modified by Flareguy for Space Station 14. Unmodified sprite from paradisestation commit 69c831afcd9aef25a2889b507e4f36a3a5fc6def, originally from /VG/ eris. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/ParadiseSS13/Paradise"

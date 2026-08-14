@@ -1,5 +1,10 @@
 - files:
   - chromite.png
+  license: "CC-BY-NC-SA-3.0"
+  copyright: "taken at commit 0587dd16e28108bdf0b0a28e2caae4319845e861, and recolored by TheShuEd. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/Mojave-Sun/mojave-sun-13"
+
+- files:
   - double_edge_E.png
   - double_edge_N.png
   - double_edge_S.png

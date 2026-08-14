@@ -1,13 +1,13 @@
 - files:
-  - grass.png
   - double_edge_E.png
   - double_edge_N.png
   - double_edge_S.png
   - double_edge_W.png
+  - grass.png
   - single_edge_NE.png
   - single_edge_NW.png
   - single_edge_SE.png
   - single_edge_SW.png
   license: "CC-BY-SA-3.0"
-  copyright: "Created by TheShuEd "
-  source: "https://github.com/crystallpunk-14/crystall-punk-14/pull/290"
+  copyright: "tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49. double_edge, single_edge, and triple_edge modified from grass by github user @Flareguy. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/27912"

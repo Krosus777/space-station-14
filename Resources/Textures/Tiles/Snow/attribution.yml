@@ -1,9 +1,13 @@
 - files:
-  - grass.png
   - double_edge_E.png
   - double_edge_N.png
   - double_edge_S.png
   - double_edge_W.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Created by Kara for the ice and snow tile modernization. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/19689"
+
+- files:
   - single_edge_NE.png
   - single_edge_NW.png
   - single_edge_SE.png
@@ -11,3 +15,15 @@
   license: "CC-BY-SA-3.0"
   copyright: "Created by TheShuEd "
   source: "https://github.com/crystallpunk-14/crystall-punk-14/pull/290"
+
+- files:
+  - snow-plating.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Modified from plating.png by github user SonicHDC. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/"
+
+- files:
+  - snow.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from CEV-Eris at commit 026ee3250ac1de938b503e3eb46ad73dd9c3ca82. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/discordia-space/CEV-Eris/commit/026ee3250ac1de938b503e3eb46ad73dd9c3ca82"

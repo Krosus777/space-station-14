@@ -1,6 +1,18 @@
 - files:
-  - concrete.png
-  - conrete-mono.png
-  - conrete-smooth.png
-  license: "CC-BY-SA-4.0"
-  copyright: "By AftrLite (GitHub)."
+  - glass-plasma.png
+  - glass-uranium.png
+  license: "CC0-1.0"
+  copyright: "Created by SeaWyrm. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/38007"
+
+- files:
+  - glass-reinf.png
+  license: "CC-BY-SA-3.0"
+  copyright: "tgstation commit 8abb19545828230d92ba18827feeb42a67a55d49, rglass modified by github user @notquitehadouken. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/17948"
+
+- files:
+  - glass.png
+  license: "CC0-1.0"
+  copyright: "Created by github user @notquitehadouken. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/17948"

@@ -1,5 +1,22 @@
 - files:
+  - asteroid-plating.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Modified from plating.png by github user SonicHDC. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/"
+
+- files:
+  - asteroid-tile.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from /vg/station at commit 02b9f6894af4419c9f7e699a22c402b086d8067e. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/vgstation-coders/vgstation13/"
+
+- files:
   - asteroid.png
+  license: "CC-BY-SA-3.0"
+  copyright: "Taken from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/tgstation/tgstation/"
+
+- files:
   - double_edge_E.png
   - double_edge_N.png
   - double_edge_S.png
@@ -9,20 +26,5 @@
   - single_edge_SE.png
   - single_edge_SW.png
   license: "CC-BY-SA-3.0"
-  copyright: "Created by Spooky @ Shiptest, modified by AftrLite (GitHub)"
-  source: "https://github.com/shiptest-ss13/Shiptest/blob/0074e283f49378cf125131d873069e2366a7e459/icons/turf/floors/beachsand.dmi"
-
-- files:
-  - asteroid-tile.png
-  license: "CC0-1.0"
-  copyright: "By AftrLite (GitHub)"
-
-- files: "asteroid.png" #Corvax-Resprite
-  license: "CC-BY-SA-3.0"
-  copyright: "Taken from /tg/station at commit 6665eec76c98a4f3f89bebcd10b34b47dcc0b8ae."
-  source: "https://github.com/tgstation/tgstation/"
-
-- files: "asteroid_plating.png" #Corvax-Resprite
-  license: "CC-BY-SA-3.0"
-  copyright: "Modified from plating.png by github user SonicHDC"
-  source: "https://github.com/space-wizards/space-station-14/"
+  copyright: "Created by kosticia for asteroid sand borders. Adapted to current tile dimensions and paths for Corvax."
+  source: "https://github.com/space-wizards/space-station-14/pull/35397"
